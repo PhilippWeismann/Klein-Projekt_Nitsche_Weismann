@@ -10,10 +10,36 @@ namespace Klein_Projekt_Nitsche_Weismann
     {
         static void Main(string[] args)
         {
-            //Test AddNewData
+            #region testarea
+            ////Test AddNewData
             //Statistics.AddNewData(10);
             //Statistics.AddNewData(20);
             //Statistics.AddNewData(15);
+
+            ////Test IsGreaterThanAverage
+            //if (Statistics.IsValueGreaterThanAverage(16))
+            //{
+            //    Console.WriteLine("Yes");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("No");
+            //}
+            //if (Statistics.IsValueGreaterThanAverage(7))
+            //{
+            //    Console.WriteLine("Yes");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("No");
+            //}
+
+            ////Test ToString()
+            //Console.WriteLine(Statistics.AsString());
+            //Console.ReadLine();
+            #endregion
+
+
         }
     }
 }

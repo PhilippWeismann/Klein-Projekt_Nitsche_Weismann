@@ -13,7 +13,7 @@ namespace Klein_Projekt_Nitsche_Weismann
         private static double _average;
         private static double _maxValue;
         private static double _minValue;
-        private static double _countSpeedtest;     //count how often a test saved in the data
+        private static int _countSpeedtest;     //count how often a test saved in the data
 
         private static string _filpath = @"..\..\..\Statistic.csv";
 
@@ -55,7 +55,7 @@ namespace Klein_Projekt_Nitsche_Weismann
                 _minValue = value;
             }
         }
-        public static double CountSpeedtest
+        public static int CountSpeedtest
         {
             get
             {
@@ -75,7 +75,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             Average = _statisticAsArray[0];
             MaxValue = _statisticAsArray[1];
             MinValue = _statisticAsArray[2];
-            CountSpeedtest = _statisticAsArray[3];
+            CountSpeedtest = Convert.ToInt32(_statisticAsArray[3]);
 
             if (CountSpeedtest > 0)
             {
@@ -136,6 +136,41 @@ namespace Klein_Projekt_Nitsche_Weismann
                 myStreamWriter.WriteLine(MinValue);
                 myStreamWriter.WriteLine(CountSpeedtest);
             }
+        }
+
+        public static bool IsValueGreaterThanAverage(double value)
+        {
+            bool output = false;
+
+            //if (Average < 0.000001)     // if Average = 0         !!unnötig, da ja zuerst ein Testgemacht werden muss!!
+            //{
+            //    ReadStatisticCsv();
+            //}
+
+            if (value > Average)
+            {
+                output = true;
+            }
+
+            return output;
+        }
+
+        public static string AsString()
+        {
+            string outputString;
+
+            if (CountSpeedtest == 0)     // if the user will see the satistic before a speedtest
+            {
+                ReadStatisticCsv();
+            }
+
+            outputString = "Statistic Speedtest:\n\n";
+
+            outputString += "The Average of the last " + CountSpeedtest + " Speedtests is: " + Average + " MBit/s";
+            outputString += "\nThe fastest Speedtest was: " + MaxValue + " MBit/s";
+            outputString += "\nThe slowest Speedtest was: " + MinValue + " MBit/s";
+
+            return outputString;
         }
         #endregion
     }
