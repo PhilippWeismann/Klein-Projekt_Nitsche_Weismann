@@ -10,6 +10,10 @@ namespace Klein_Projekt_Nitsche_Weismann
     {
         static void Main(string[] args)
         {
+            //Test AddNewData
+            //Statistics.AddNewData(10);
+            //Statistics.AddNewData(20);
+            //Statistics.AddNewData(15);
         }
     }
 }
