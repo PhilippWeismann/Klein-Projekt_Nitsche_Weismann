@@ -7,54 +7,100 @@ using System.Threading.Tasks;
 
 namespace Klein_Projekt_Nitsche_Weismann
 {
-    class Statistics
+    static class Statistics
     {
-        #region Variables
-        private static double _average;
-        private static double _maxValue;
-        private static double _minValue;
+
+        #region Members
+        private static double _averageDownloadTime;
+        static double _minDownloadTime;
+        static double _maxDownloadTime;
+        static double _currentDownloadTime;
         private static int _countSpeedtest;     //count how often a test saved in the data
 
         private static string _filpath = @"..\..\..\Statistic.csv";
 
-        //private static List<double> _statisticAsList;
-        private static double[] _statisticAsArray = new double[4];  //[0] average, [1] maxValue, [2] minValue, [4] countSpeedtest
+        private static double[] _statisticAsArray = new double[5];  //[0] average, [1] maxValue, [2] minValue, [4] last/current DownloadTime, [4] countSpeedtest
+
+        //static int _length;
         #endregion
 
         #region Properties
-        public static double Average
+        public static double MinimumDownloadTime
         {
             get
             {
-                return _average;
+                return _minDownloadTime;
             }
             set
             {
-                _average = value;
+                if (value > 0)
+                {
+                    _minDownloadTime = value;
+                }
+                else
+                {
+                    new Exception("Invalid Minimum Download Time Value!");
+                }
             }
         }
-        public static double MaxValue
+
+        public static double MaximumDownloadTime
         {
             get
             {
-                return _maxValue;
+                return _maxDownloadTime;
             }
             set
             {
-                _maxValue = value;
+                if (value > _minDownloadTime)
+                {
+                    _maxDownloadTime = value;
+                }
+                else
+                {
+                    new Exception("Invalid Maximum Download Time Value!");
+                }
             }
         }
-        public static double MinValue
+
+        public static double CurrentDownloadTime
         {
             get
             {
-                return _minValue;
+                return _currentDownloadTime;
             }
             set
             {
-                _minValue = value;
+                if (value > _minDownloadTime && value < _maxDownloadTime)
+                {
+                    _currentDownloadTime = value;
+                }
+                else
+                {
+                    new Exception("Invalid Current Download Time Value!");
+                }
             }
         }
+
+        public static double AverageDownloadTime
+        {
+            get
+            {
+                return _averageDownloadTime;
+            }
+            set
+            {
+                if (value > _minDownloadTime && value < _maxDownloadTime)
+                {
+                    _averageDownloadTime = value;
+                }
+                else
+                {
+                    new Exception("Invalid Average Download Time Value!");
+                }
+            }
+        }
+
         public static int CountSpeedtest
         {
             get
@@ -63,44 +109,54 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                _countSpeedtest = value;
+                if (value > 0)
+                {
+                    _countSpeedtest = value;
+                }
+                else
+                {
+                    new Exception("Invalid Speedtest Count Value!");
+                }
             }
         }
+
         #endregion
+
+        //No Konstruktor at static classes
 
         #region methods
         public static void AddNewData(double value)
         {
             ReadStatisticCsv();
-            Average = _statisticAsArray[0];
-            MaxValue = _statisticAsArray[1];
-            MinValue = _statisticAsArray[2];
-            CountSpeedtest = Convert.ToInt32(_statisticAsArray[3]);
+            AverageDownloadTime = _statisticAsArray[0];
+            MaximumDownloadTime = Convert.ToInt32(_statisticAsArray[1]);
+            MinimumDownloadTime = Convert.ToInt32(_statisticAsArray[2]);
+            CountSpeedtest = Convert.ToInt32(_statisticAsArray[4]);
 
             if (CountSpeedtest > 0)
             {
-                Average = ((Average * CountSpeedtest) + value) / (CountSpeedtest + 1);
-                if (value > MaxValue)
+                AverageDownloadTime = ((AverageDownloadTime * CountSpeedtest) + value) / (CountSpeedtest + 1);
+                if (value > MaximumDownloadTime)
                 {
-                    MaxValue = value;
+                    MaximumDownloadTime = value;
                 }
-                if (value < MinValue)
+                if (value < MinimumDownloadTime)
                 {
-                    MinValue = value;
+                    MinimumDownloadTime = value;
                 }
             }
             else        //nur beim ersten SpeedTest
             {
-                Average = value;
-                MaxValue = value;
-                MinValue = value;
+                AverageDownloadTime = value;
+                MaximumDownloadTime = value;
+                MinimumDownloadTime = value;
             }
             CountSpeedtest += 1;
             StatisticToCsv();
         }
-        public static void ReadStatisticCsv()
+        public static double[] ReadStatisticCsv()
         {
-            List<double> statisticAsList = new List<double>();
+            //List<double> statisticAsList = new List<double>();
 
             StreamReader myStreamReader = new StreamReader(_filpath);
             double line;
@@ -114,7 +170,8 @@ namespace Klein_Projekt_Nitsche_Weismann
                 {
                     try
                     {
-                        statisticAsList.Add(line);
+                        //statisticAsList.Add(line);
+                        _statisticAsArray[counter] = line;
                     }
                     catch (Exception)
                     {
@@ -125,15 +182,17 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             myStreamReader.Close();
 
-            _statisticAsArray = statisticAsList.ToArray();
+            //_statisticAsArray = statisticAsList.ToArray();
+
+            return _statisticAsArray;
         }
         public static void StatisticToCsv()
         {
             using (StreamWriter myStreamWriter = new StreamWriter(_filpath))
             {
-                myStreamWriter.WriteLine(Average);
-                myStreamWriter.WriteLine(MaxValue);
-                myStreamWriter.WriteLine(MinValue);
+                myStreamWriter.WriteLine(AverageDownloadTime);
+                myStreamWriter.WriteLine(MaximumDownloadTime);
+                myStreamWriter.WriteLine(MinimumDownloadTime);
                 myStreamWriter.WriteLine(CountSpeedtest);
             }
         }
@@ -147,7 +206,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             //    ReadStatisticCsv();
             //}
 
-            if (value > Average)
+            if (value > AverageDownloadTime)
             {
                 output = true;
             }
@@ -166,11 +225,33 @@ namespace Klein_Projekt_Nitsche_Weismann
 
             outputString = "Statistic Speedtest:\n\n";
 
-            outputString += "The Average of the last " + CountSpeedtest + " Speedtests is: " + Average + " MBit/s";
-            outputString += "\nThe fastest Speedtest was: " + MaxValue + " MBit/s";
-            outputString += "\nThe slowest Speedtest was: " + MinValue + " MBit/s";
+            outputString += "The Average of the last " + CountSpeedtest + " Speedtests is: " + AverageDownloadTime + " MBit/s";
+            outputString += "\nThe fastest Speedtest was: " + MaximumDownloadTime + " MBit/s";
+            outputString += "\nThe slowest Speedtest was: " + MinimumDownloadTime + " MBit/s";
 
             return outputString;
+        }
+
+        static string DisplayProgessBarInConsole(int length)
+        {
+
+
+
+
+
+
+
+            return "";
+        }
+
+        static void ReadMinMiaxValuesFromDatabaseTxt()
+        {
+            MinimumDownloadTime = Statistics.ReadStatisticCsv()[0];
+            MinimumDownloadTime = Statistics.ReadStatisticCsv()[0];
+            MinimumDownloadTime = Statistics.ReadStatisticCsv()[0];
+
+
+
         }
         #endregion
     }

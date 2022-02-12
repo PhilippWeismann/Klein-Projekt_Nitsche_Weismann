@@ -11,6 +11,14 @@ namespace Klein_Projekt_Nitsche_Weismann
     {
         static void Main(string[] args)
         {
+            // Program Flow:
+            // measure Data
+            // Add Data to Statistics
+            // generate progress bar out of statistics
+
+
+
+
             #region testarea
             ////Test AddNewData
             //Statistics.AddNewData(10);
