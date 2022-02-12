@@ -11,15 +11,19 @@ namespace Klein_Projekt_Nitsche_Weismann
     {
 
         #region Members
-        private static double _averageDownloadTime;
         static double _minDownloadTime;
+        private static double _averageDownloadTime;
         static double _maxDownloadTime;
         static double _currentDownloadTime;
         private static int _countSpeedtest;     //count how often a test saved in the data
 
         private static string _filpath = @"..\..\..\Statistic.csv";
 
-        private static double[] _statisticAsArray = new double[5];  //[0] average, [1] maxValue, [2] minValue, [4] last/current DownloadTime, [4] countSpeedtest
+        private static double[] _statisticAsArray = new double[5];  //[0] MinimumDownloadTime
+                                                                    //[1] AverageDownloadTime
+                                                                    //[2] MaximumDownloadTime
+                                                                    //[3] last/current DownloadTime
+                                                                    //[4] countSpeedtest
 
         //static int _length;
         #endregion
@@ -128,9 +132,10 @@ namespace Klein_Projekt_Nitsche_Weismann
         public static void AddNewData(double value)
         {
             ReadStatisticCsv();
-            AverageDownloadTime = _statisticAsArray[0];
-            MaximumDownloadTime = Convert.ToInt32(_statisticAsArray[1]);
-            MinimumDownloadTime = Convert.ToInt32(_statisticAsArray[2]);
+            MinimumDownloadTime = Convert.ToInt32(_statisticAsArray[0]);
+            AverageDownloadTime = _statisticAsArray[1];
+            MaximumDownloadTime = Convert.ToInt32(_statisticAsArray[2]);
+            CurrentDownloadTime = Convert.ToInt32(_statisticAsArray[3]);
             CountSpeedtest = Convert.ToInt32(_statisticAsArray[4]);
 
             if (CountSpeedtest > 0)
@@ -151,6 +156,7 @@ namespace Klein_Projekt_Nitsche_Weismann
                 MaximumDownloadTime = value;
                 MinimumDownloadTime = value;
             }
+            CurrentDownloadTime = value;
             CountSpeedtest += 1;
             StatisticToCsv();
         }
@@ -166,7 +172,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             {
                 double.TryParse(myStreamReader.ReadLine(), out line);
 
-                if (counter < 4)
+                if (counter < 5)
                 {
                     try
                     {
@@ -190,9 +196,10 @@ namespace Klein_Projekt_Nitsche_Weismann
         {
             using (StreamWriter myStreamWriter = new StreamWriter(_filpath))
             {
+                myStreamWriter.WriteLine(MinimumDownloadTime);
                 myStreamWriter.WriteLine(AverageDownloadTime);
                 myStreamWriter.WriteLine(MaximumDownloadTime);
-                myStreamWriter.WriteLine(MinimumDownloadTime);
+                myStreamWriter.WriteLine(CurrentDownloadTime);
                 myStreamWriter.WriteLine(CountSpeedtest);
             }
         }
@@ -232,27 +239,51 @@ namespace Klein_Projekt_Nitsche_Weismann
             return outputString;
         }
 
-        static string DisplayProgessBarInConsole(int length)
+        private static double ConvertDownloadTimeToMbitperSecond()
         {
+            double mbits = 0;
 
+            //code zum umrechnen
 
-
-
-
-
-
-            return "";
+            return mbits;
+        
         }
 
-        static void ReadMinMiaxValuesFromDatabaseTxt()
+        public static string ProgessBarString(int length)
         {
-            MinimumDownloadTime = Statistics.ReadStatisticCsv()[0];
-            MinimumDownloadTime = Statistics.ReadStatisticCsv()[0];
-            MinimumDownloadTime = Statistics.ReadStatisticCsv()[0];
+            char marker = '█';
+            char blurred = '░';
+            char beginAndEnd = '|';
+            
 
 
+            string progressbarstring = "";
 
+            progressbarstring += beginAndEnd;
+            progressbarstring += blurred;
+            progressbarstring += marker;
+            progressbarstring += blurred;
+            progressbarstring += beginAndEnd;
+
+            progressbarstring = "";
+            for (int i = 0; i < 101; i++)
+            {
+                if (i==50)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    progressbarstring += marker;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    progressbarstring += blurred;
+                }
+                
+            }
+
+            return progressbarstring;
         }
+
         #endregion
     }
 }
