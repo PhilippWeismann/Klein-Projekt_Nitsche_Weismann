@@ -112,15 +112,27 @@ namespace Klein_Projekt_Nitsche_Weismann
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(sign);
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.ForegroundColor = ConsoleColor.White;
 
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(sign);
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.ForegroundColor = ConsoleColor.White;
                     }
+                }
+                else if (sign == '░')
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write(sign);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else if (sign == '▓')
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(sign);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 else
                 {

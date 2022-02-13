@@ -183,8 +183,8 @@ namespace Klein_Projekt_Nitsche_Weismann
 
                         
                         MinimumDownloadTime = Convert.ToInt32(parts[0]);
-                        AverageDownloadTime = Convert.ToDouble(parts[1]);
                         MaximumDownloadTime = Convert.ToInt32(parts[2]);
+                        AverageDownloadTime = Convert.ToDouble(parts[1]);
                         CurrentDownloadTime = Convert.ToInt32(parts[3]);
                         CountSpeedtest = Convert.ToInt32(parts[4]);
 
@@ -266,38 +266,80 @@ namespace Klein_Projekt_Nitsche_Weismann
         {
             char marker = '█';
             char blurred = '░';
-            int blurredLength = length - 2;
+            char avgmarker = '▓';
+            int blurredLength = length - 4;
+            string avgstring = "";
+
+            string beginstring = "Min: " + MinimumDownloadTime + "ms  ";
 
             int span = MaximumDownloadTime - MinimumDownloadTime;
+            double scalingfactor = (double)length / (double)span;
+            int scaledMin = beginstring.Length;
+            int scaledAvg = scaledMin + Convert.ToInt32((AverageDownloadTime - MinimumDownloadTime) * scalingfactor);
+            int scaledCurrent = scaledMin + Convert.ToInt32((CurrentDownloadTime - MinimumDownloadTime) * scalingfactor);
 
-            double stretchfactor = (double)length / (double)span;
+            #region AVG_Line
 
-            int signsBelowCurrentTime = (int) Math.Round(stretchfactor * (CurrentDownloadTime - MinimumDownloadTime));
+            string descriptionstringAvg = "Avg: " + String.Format("{0:0.00}", AverageDownloadTime) + "ms";
 
+            int spacesBeforeAvgDescription = scaledAvg - (int)Math.Round((double)descriptionstringAvg.Length / 2);
 
+            if (spacesBeforeAvgDescription < 0)
+            {
+                spacesBeforeAvgDescription = 0;
+            }
 
-            string barstring = "Min: " + MinimumDownloadTime + "ms  ";
+            for (int i = 0; i < spacesBeforeAvgDescription; i++)
+            {
+                avgstring += " ";
+            }
+            avgstring += "  " + descriptionstringAvg;
+            avgstring += "\n";
 
-            int startlength = barstring.Length;
+            #endregion
+
+            #region Bar_Line
+            string barstring = "";
+            barstring += beginstring;
 
             for (int i = 0; i < blurredLength; i++)
             {
                 barstring += blurred;
             }
 
-            barstring = barstring.Insert(startlength,marker.ToString());
-            barstring = barstring.Insert(startlength + signsBelowCurrentTime + 1 , marker.ToString());
-            barstring = barstring.Insert(startlength + blurredLength + 2 , marker.ToString());
+            if (scaledCurrent > scaledAvg)
+            {
+                barstring = barstring.Insert(scaledMin, marker.ToString());
+                barstring = barstring.Insert(scaledAvg + 1, avgmarker.ToString());
+                barstring = barstring.Insert(scaledCurrent + 2, marker.ToString());
+                barstring += marker;
+            }
+            else if (scaledCurrent < scaledAvg)
+            {
+                barstring = barstring.Insert(scaledMin, marker.ToString());
+                barstring = barstring.Insert(scaledCurrent + 1, marker.ToString());
+                barstring = barstring.Insert(scaledAvg + 2, avgmarker.ToString());
+                barstring += marker;
+            }
+            else
+            {
+                barstring = barstring.Insert(scaledMin, marker.ToString());
+                barstring = barstring.Insert(scaledCurrent + 1, marker.ToString());
+                barstring += marker;
+            }
+
 
             barstring += "  Max: " + MaximumDownloadTime + "ms";
 
             barstring += "\n";
+            #endregion
 
+            #region Current_Description_Line
             string descriptionstring = "Current: " + CurrentDownloadTime + "ms" + "\n\n";
 
-            int spacesBeforeCurrentTimeDescription = startlength + signsBelowCurrentTime - (int) Math.Round((double) descriptionstring.Length / 2);
+            int spacesBeforeCurrentTimeDescription = scaledCurrent - (int)Math.Round((double)descriptionstring.Length / 2);
 
-            if (spacesBeforeCurrentTimeDescription<0)
+            if (spacesBeforeCurrentTimeDescription < 0)
             {
                 spacesBeforeCurrentTimeDescription = 0;
             }
@@ -308,8 +350,10 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
 
             barstring += "  " + descriptionstring;
+            #endregion
 
-            return barstring;
+
+            return avgstring + barstring;
         }
 
         #endregion
