@@ -51,9 +51,14 @@ namespace Klein_Projekt_Nitsche_Weismann
             Console.WriteLine("Download dauert ba mia ca 5200ms... bitte warten...");
             Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
             Console.ReadKey();
-            PrintBarStringToConsole();
-
+            PrintBarStringToConsole(80);
             Console.ReadKey();
+
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
+                PrintBarStringToConsole(80);
+            }
             #endregion
 
             Mainmenu();
@@ -91,10 +96,10 @@ namespace Klein_Projekt_Nitsche_Weismann
             Console.ReadLine();
         }
 
-        public static void PrintBarStringToConsole()
+        public static void PrintBarStringToConsole(int printLength)
         {
-            Console.Write("\t");
-            string barString = Statistics.BarString(100);
+            //Console.Write("\t");
+            string barString = Statistics.BarString(printLength-2);
             int counter = 0;
 
             foreach (char sign in barString)
@@ -103,7 +108,7 @@ namespace Klein_Projekt_Nitsche_Weismann
 
                 if (sign == '█')
                 {
-                    if (counter == 1 || counter == barString.Length)
+                    if (counter == 1 || counter == printLength)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(sign);

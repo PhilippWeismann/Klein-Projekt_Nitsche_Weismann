@@ -264,7 +264,9 @@ namespace Klein_Projekt_Nitsche_Weismann
             int signsUpperCurrentTime = lengthWithoutMarker - signsBelowCurrentTime;
 
 
-            string progressbarstring = "";
+            string progressbarstring = "Min: " + MinimumDownloadTime + "ms";
+
+            int startlength = progressbarstring.Length;
 
             progressbarstring += marker;
             for (int i = 0; i < signsBelowCurrentTime + 1; i++)
@@ -277,6 +279,23 @@ namespace Klein_Projekt_Nitsche_Weismann
                 progressbarstring += blurred;
             }
             progressbarstring += marker;
+
+            progressbarstring += "Max: " + MaximumDownloadTime + "ms";
+
+            progressbarstring += "\n";
+
+            int spacesBeforeCurrentTimeDescription = startlength + signsBelowCurrentTime - (int) Math.Round((double)(11 + CurrentDownloadTime.ToString().Length) / 2);
+
+            if (spacesBeforeCurrentTimeDescription<0)
+            {
+                spacesBeforeCurrentTimeDescription = 0;
+            }
+
+            for (int i = 0; i < spacesBeforeCurrentTimeDescription; i++)
+            {
+                progressbarstring += " ";
+            }
+            progressbarstring += "Current: " + CurrentDownloadTime + "ms";
 
             return progressbarstring;
         }
