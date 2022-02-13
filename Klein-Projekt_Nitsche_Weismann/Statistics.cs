@@ -17,7 +17,7 @@ namespace Klein_Projekt_Nitsche_Weismann
         static int _currentDownloadTime;
         private static int _countSpeedtest;     //count how often a test saved in the data
 
-        private static string _filpath = @"..\..\..\Statistic.csv";
+        private static string _filepath = @"..\..\..\Statistic.csv";
 
         private static double[] _statisticAsArray = new double[5];  //[0] MinimumDownloadTime
                                                                     //[1] AverageDownloadTime
@@ -56,7 +56,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value > _minDownloadTime)
+                if (value >= _minDownloadTime)
                 {
                     _maxDownloadTime = value;
                 }
@@ -75,7 +75,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value > _minDownloadTime && value < _maxDownloadTime)
+                if (value >= _minDownloadTime && value <= _maxDownloadTime)
                 {
                     _currentDownloadTime = value;
                 }
@@ -94,7 +94,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value > _minDownloadTime && value < _maxDownloadTime)
+                if (value >= _minDownloadTime && value <= _maxDownloadTime)
                 {
                     _averageDownloadTime = value;
                 }
@@ -113,7 +113,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value > 0)
+                if (value >= 0)
                 {
                     _countSpeedtest = value;
                 }
@@ -131,12 +131,7 @@ namespace Klein_Projekt_Nitsche_Weismann
         #region methods
         public static void AddNewData(int downloadTimeValue)
         {
-            ReadStatisticCsv();
-            MinimumDownloadTime = Convert.ToInt32(_statisticAsArray[0]);
-            AverageDownloadTime = _statisticAsArray[1];
-            MaximumDownloadTime = Convert.ToInt32(_statisticAsArray[2]);
-            CurrentDownloadTime = Convert.ToInt32(_statisticAsArray[3]);
-            CountSpeedtest = Convert.ToInt32(_statisticAsArray[4]);
+            ReadStatisticCsv(';');
 
             if (CountSpeedtest > 0)
             {
@@ -152,55 +147,74 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             else        //nur beim ersten SpeedTest
             {
-                AverageDownloadTime = downloadTimeValue;
-                MaximumDownloadTime = downloadTimeValue;
                 MinimumDownloadTime = downloadTimeValue;
+                MaximumDownloadTime = downloadTimeValue;
+                AverageDownloadTime = downloadTimeValue;
             }
             CurrentDownloadTime = downloadTimeValue;
             CountSpeedtest += 1;
             StatisticToCsv();
         }
-        public static double[] ReadStatisticCsv()
+        public static void ReadStatisticCsv(char seperator)
         {
-            //List<double> statisticAsList = new List<double>();
 
-            StreamReader myStreamReader = new StreamReader(_filpath);
-            double line;
-            int counter = 0;
+            string[] parts;
+
+            StreamReader myStreamReader = new StreamReader(_filepath);
+
+            string line;
+
+            int counter = 1;
 
             while (myStreamReader.Peek() != -1)
             {
-                double.TryParse(myStreamReader.ReadLine(), out line);
+                line = myStreamReader.ReadLine();
 
-                if (counter < 5)
+                if (counter > 1)
                 {
                     try
                     {
-                        //statisticAsList.Add(line);
-                        _statisticAsArray[counter] = line;
+                        parts = line.Split(seperator);
+
+                        for (int i = 0; i < parts.Length; i++)
+                        {
+                            parts[i] = parts[i].Replace('.', ',');
+                        }
+
+                        
+                        MinimumDownloadTime = Convert.ToInt32(parts[0]);
+                        AverageDownloadTime = Convert.ToDouble(parts[1]);
+                        MaximumDownloadTime = Convert.ToInt32(parts[2]);
+                        CurrentDownloadTime = Convert.ToInt32(parts[3]);
+                        CountSpeedtest = Convert.ToInt32(parts[4]);
+
                     }
                     catch (Exception)
                     {
-                        throw new Exception();
+                        // throw auskommentiert , das Programm weiterlaufen soll um zu berechnen (Fail silent)
+                        // throw würde Aktiv werden wenn eine Exception bei den Set-Properties auftritt (Wertebereich)
+                        // oder beim var.Parse in ConvertLineToWeatherData
+
+                        /*throw*/
+                        new Exception("Statistic Data is not readable");
                     }
                 }
+
                 counter++;
             }
             myStreamReader.Close();
-
-            //_statisticAsArray = statisticAsList.ToArray();
-
-            return _statisticAsArray;
         }
+
+
         public static void StatisticToCsv()
         {
-            using (StreamWriter myStreamWriter = new StreamWriter(_filpath))
+            using (StreamWriter myStreamWriter = new StreamWriter(_filepath))
             {
-                myStreamWriter.WriteLine(MinimumDownloadTime);
-                myStreamWriter.WriteLine(AverageDownloadTime);
-                myStreamWriter.WriteLine(MaximumDownloadTime);
-                myStreamWriter.WriteLine(CurrentDownloadTime);
-                myStreamWriter.WriteLine(CountSpeedtest);
+
+                myStreamWriter.WriteLine("Min;Avg;Max;Current;Count");
+                string writeString = MinimumDownloadTime + ";" + AverageDownloadTime + ";" + MaximumDownloadTime + ";" + CurrentDownloadTime + ";" + CountSpeedtest + ";";
+                myStreamWriter.WriteLine(writeString);
+                
             }
         }
 
@@ -227,7 +241,7 @@ namespace Klein_Projekt_Nitsche_Weismann
 
             if (CountSpeedtest == 0)     // if the user will see the satistic before a speedtest
             {
-                ReadStatisticCsv();
+                ReadStatisticCsv(';');
             }
 
             outputString = "Statistic Speedtest:\n\n";
@@ -295,7 +309,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             {
                 progressbarstring += " ";
             }
-            progressbarstring += "Current: " + CurrentDownloadTime + "ms";
+            progressbarstring += "Current: " + CurrentDownloadTime + "ms" +"\n\n";
 
             return progressbarstring;
         }

@@ -49,16 +49,15 @@ namespace Klein_Projekt_Nitsche_Weismann
 
 
             Console.WriteLine("Download dauert ba mia ca 5200ms... bitte warten...");
-            Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
-            Console.ReadKey();
-            PrintBarStringToConsole(80);
-            Console.ReadKey();
 
-            for (int i = 0; i < 5; i++)
+
+            for (int i = 0; i < 3; i++)
             {
                 Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
                 PrintBarStringToConsole(80);
             }
+            Console.ReadKey();
+
             #endregion
 
             Mainmenu();

@@ -28,6 +28,8 @@ namespace Klein_Projekt_Nitsche_Weismann
 
             currentDownloadTime = Convert.ToInt32(stopwatch.ElapsedMilliseconds);
 
+            stopwatch.Reset();
+
             Statistics.AddNewData(currentDownloadTime);
 
             return currentDownloadTime;
