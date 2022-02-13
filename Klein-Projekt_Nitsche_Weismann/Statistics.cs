@@ -193,7 +193,6 @@ namespace Klein_Projekt_Nitsche_Weismann
                     {
                         // throw auskommentiert , das Programm weiterlaufen soll um zu berechnen (Fail silent)
                         // throw würde Aktiv werden wenn eine Exception bei den Set-Properties auftritt (Wertebereich)
-                        // oder beim var.Parse in ConvertLineToWeatherData
 
                         /*throw*/
                         new Exception("Statistic Data is not readable");
@@ -265,40 +264,38 @@ namespace Klein_Projekt_Nitsche_Weismann
 
         public static string BarString(int length)
         {
-            int lengthWithoutMarker = length - 3;
             char marker = '█';
             char blurred = '░';
+            int blurredLength = length - 2;
 
             int span = MaximumDownloadTime - MinimumDownloadTime;
 
-            double stretchfactor = (double)lengthWithoutMarker / (double)span;
+            double stretchfactor = (double)length / (double)span;
 
             int signsBelowCurrentTime = (int) Math.Round(stretchfactor * (CurrentDownloadTime - MinimumDownloadTime));
 
-            int signsUpperCurrentTime = lengthWithoutMarker - signsBelowCurrentTime;
 
 
-            string progressbarstring = "Min: " + MinimumDownloadTime + "ms";
+            string barstring = "Min: " + MinimumDownloadTime + "ms  ";
 
-            int startlength = progressbarstring.Length;
+            int startlength = barstring.Length;
 
-            progressbarstring += marker;
-            for (int i = 0; i < signsBelowCurrentTime + 1; i++)
+            for (int i = 0; i < blurredLength; i++)
             {
-                progressbarstring += blurred;
+                barstring += blurred;
             }
-            progressbarstring += marker;
-            for (int i = 0; i < signsUpperCurrentTime + 1; i++)
-            {
-                progressbarstring += blurred;
-            }
-            progressbarstring += marker;
 
-            progressbarstring += "Max: " + MaximumDownloadTime + "ms";
+            barstring = barstring.Insert(startlength,marker.ToString());
+            barstring = barstring.Insert(startlength + signsBelowCurrentTime + 1 , marker.ToString());
+            barstring = barstring.Insert(startlength + blurredLength + 2 , marker.ToString());
 
-            progressbarstring += "\n";
+            barstring += "  Max: " + MaximumDownloadTime + "ms";
 
-            int spacesBeforeCurrentTimeDescription = startlength + signsBelowCurrentTime - (int) Math.Round((double)(11 + CurrentDownloadTime.ToString().Length) / 2);
+            barstring += "\n";
+
+            string descriptionstring = "Current: " + CurrentDownloadTime + "ms" + "\n\n";
+
+            int spacesBeforeCurrentTimeDescription = startlength + signsBelowCurrentTime - (int) Math.Round((double) descriptionstring.Length / 2);
 
             if (spacesBeforeCurrentTimeDescription<0)
             {
@@ -307,11 +304,12 @@ namespace Klein_Projekt_Nitsche_Weismann
 
             for (int i = 0; i < spacesBeforeCurrentTimeDescription; i++)
             {
-                progressbarstring += " ";
+                barstring += " ";
             }
-            progressbarstring += "Current: " + CurrentDownloadTime + "ms" +"\n\n";
 
-            return progressbarstring;
+            barstring += "  " + descriptionstring;
+
+            return barstring;
         }
 
         #endregion

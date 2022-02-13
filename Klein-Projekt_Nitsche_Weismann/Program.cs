@@ -103,11 +103,12 @@ namespace Klein_Projekt_Nitsche_Weismann
 
             foreach (char sign in barString)
             {
-                counter ++;
 
                 if (sign == '█')
                 {
-                    if (counter == 1 || counter == printLength)
+                    counter++;
+
+                    if (counter == 1 || counter == 3)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(sign);
