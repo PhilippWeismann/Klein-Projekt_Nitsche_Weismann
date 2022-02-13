@@ -20,11 +20,17 @@ namespace Klein_Projekt_Nitsche_Weismann
 
         public static long DownloadTimeOfFile()
         {
+            int currentDownloadTime = 0;
+
             stopwatch.Start();
             myWebclient.DownloadFile(downloadLink, tempSavingPath);
             stopwatch.Stop();
 
-            return stopwatch.ElapsedMilliseconds;
+            currentDownloadTime = Convert.ToInt32(stopwatch.ElapsedMilliseconds);
+
+            Statistics.AddNewData(currentDownloadTime);
+
+            return currentDownloadTime;
         
         }
     }
