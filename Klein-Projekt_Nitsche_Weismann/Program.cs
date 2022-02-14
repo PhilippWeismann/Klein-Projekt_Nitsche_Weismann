@@ -16,9 +16,6 @@ namespace Klein_Projekt_Nitsche_Weismann
             // Add Data to Statistics
             // generate progress bar out of statistics
 
-
-
-
             #region testarea
             ////Test AddNewData
             //Statistics.AddNewData(10);
@@ -48,15 +45,15 @@ namespace Klein_Projekt_Nitsche_Weismann
             //Console.ReadLine();
 
 
-            Console.WriteLine("Download dauert ba mia ca 5200ms... bitte warten...");
+            //Console.WriteLine("Download dauert ba mia ca 5200ms... bitte warten...");
 
 
-            for (int i = 0; i < 3; i++)
-            {
-                Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
-                PrintBarStringToConsole(80);
-            }
-            Console.ReadKey();
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
+            //    PrintBarStringToConsole(80);
+            //}
+            //Console.ReadKey();
 
             #endregion
 
@@ -70,6 +67,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             ConsoleMenu Mainmenu = new ConsoleMenu(new Option[]{
                 new Option("Do a Speedtest", () => Speedtest()),
                 new Option("Show Statistics", () => ShowStatistics()),
+                new Option("Reset Statistics", () => Statistics.ResetStatitic()),
                 new Option("Exit", () => exit = true)
             });
 
@@ -84,7 +82,12 @@ namespace Klein_Projekt_Nitsche_Weismann
 
         public static void Speedtest()
         {
+            Console.Clear();
 
+            Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
+            PrintBarStringToConsole(80);
+
+            Console.ReadKey();
         }
         public static void ShowStatistics()
         {
