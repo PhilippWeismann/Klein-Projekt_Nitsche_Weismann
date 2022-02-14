@@ -97,8 +97,7 @@ namespace Klein_Projekt_Nitsche_Weismann
 
         public static void PrintBarStringToConsole(int printLength)
         {
-            //Console.Write("\t");
-            string barString = Statistics.BarString(printLength-2);
+            string barString = Statistics.BarString(printLength);
             int counter = 0;
 
             foreach (char sign in barString)

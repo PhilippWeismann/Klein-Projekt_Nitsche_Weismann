@@ -17,6 +17,8 @@ namespace Klein_Projekt_Nitsche_Weismann
         static int _currentDownloadTime;
         private static int _countSpeedtest;     //count how often a test saved in the data
 
+        private static int _filesize = 1000000; //constant filsize of file which is downloaded [1000000 Byte]
+
         private static string _filepath = @"..\..\..\Statistic.csv";
 
         private static double[] _statisticAsArray = new double[5];  //[0] MinimumDownloadTime
@@ -252,108 +254,120 @@ namespace Klein_Projekt_Nitsche_Weismann
             return outputString;
         }
 
-        private static double ConvertDownloadTimeToMbitperSecond()
+        private static double ConvertDownloadTimeToMbitperSecond(double downloadTimeIn_ms)
         {
-            double mbits = 0;
+            double DownloadSpeed = 0; //Mbit/s
+            int filesizeInMBit = _filesize * 8 / 1000000;
 
-            //code zum umrechnen
+            DownloadSpeed = filesizeInMBit / (downloadTimeIn_ms/1000);
 
-            return mbits;
+            return DownloadSpeed;
         
         }
 
         public static string BarString(int length)
         {
-            char marker = '█';
-            char blurred = '░';
-            char avgmarker = '▓';
-            int blurredLength = length - 4;
-            string avgstring = "";
-
-            string beginstring = "Min: " + MinimumDownloadTime + "ms  ";
-
-            int span = MaximumDownloadTime - MinimumDownloadTime;
-            double scalingfactor = (double)length / (double)span;
-            int scaledMin = beginstring.Length;
-            int scaledAvg = scaledMin + Convert.ToInt32((AverageDownloadTime - MinimumDownloadTime) * scalingfactor);
-            int scaledCurrent = scaledMin + Convert.ToInt32((CurrentDownloadTime - MinimumDownloadTime) * scalingfactor);
-
-            #region AVG_Line
-
-            string descriptionstringAvg = "Avg: " + String.Format("{0:0.00}", AverageDownloadTime) + "ms";
-
-            int spacesBeforeAvgDescription = scaledAvg - (int)Math.Round((double)descriptionstringAvg.Length / 2);
-
-            if (spacesBeforeAvgDescription < 0)
+            try
             {
-                spacesBeforeAvgDescription = 0;
-            }
+                if (CountSpeedtest < 3)
+                {
+                    return "Statistic Bar is only available after 2 Download Speed Measurements were taken.\nThere were currently " + CountSpeedtest + " Download Speed Measurements taken.";
+                }
+                else
+                {
+                    char marker = '█';
+                    char blurred = '░';
+                    char avgmarker = '▓';
+                    int blurredLength = length - 4;
+                    string avgstring = "";
 
-            for (int i = 0; i < spacesBeforeAvgDescription; i++)
+                    string beginstring = "Max: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(MinimumDownloadTime)) + "MBit/s  ";
+
+                    int span = MaximumDownloadTime - MinimumDownloadTime;
+                    double scalingfactor = (double)length / (double)span;
+                    int scaledMin = beginstring.Length;
+                    int scaledAvg = scaledMin + Convert.ToInt32((AverageDownloadTime - MinimumDownloadTime) * scalingfactor);
+                    int scaledCurrent = scaledMin + Convert.ToInt32((CurrentDownloadTime - MinimumDownloadTime) * scalingfactor);
+
+                    #region AVG_Line
+
+                    string descriptionstringAvg = "Avg: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(AverageDownloadTime)) + "MBit/s  ";
+
+                    int spacesBeforeAvgDescription = scaledAvg - (int)Math.Round((double)descriptionstringAvg.Length / 2);
+
+                    if (spacesBeforeAvgDescription < 0)
+                    {
+                        spacesBeforeAvgDescription = 0;
+                    }
+
+                    for (int i = 0; i < spacesBeforeAvgDescription; i++)
+                    {
+                        avgstring += " ";
+                    }
+                    avgstring += "  " + descriptionstringAvg;
+                    avgstring += "\n";
+
+                    #endregion
+
+                    #region Bar_Line
+                    string barstring = "";
+                    barstring += beginstring;
+
+                    for (int i = 0; i <= blurredLength; i++)
+                    {
+                        barstring += blurred;
+                    }
+
+                    int len = barstring.Length;
+
+                    if (scaledCurrent > scaledAvg)
+                    {
+                        barstring = barstring.Insert(scaledMin, marker.ToString());
+                        barstring = barstring.Insert(scaledAvg + 1, avgmarker.ToString());
+                        barstring = barstring.Insert(scaledCurrent + 2, marker.ToString());
+                        barstring += marker;
+                    }
+                    else
+                    {
+                        barstring = barstring.Insert(scaledMin, marker.ToString());
+                        barstring = barstring.Insert(scaledCurrent + 1, marker.ToString());
+                        barstring = barstring.Insert(scaledAvg + 2, avgmarker.ToString());
+                        barstring += marker;
+                    }
+
+
+
+                    barstring += "  Min: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(MaximumDownloadTime)) + "MBit/s  ";
+
+                    barstring += "\n";
+                    #endregion
+
+                    #region Current_Description_Line
+                    string descriptionstring = "Current: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(CurrentDownloadTime)) + "MBit/s  " + "\n\n";
+
+                    int spacesBeforeCurrentTimeDescription = scaledCurrent - (int)Math.Round((double)descriptionstring.Length / 2);
+
+                    if (spacesBeforeCurrentTimeDescription < 0)
+                    {
+                        spacesBeforeCurrentTimeDescription = 0;
+                    }
+
+                    for (int i = 0; i < spacesBeforeCurrentTimeDescription; i++)
+                    {
+                        barstring += " ";
+                    }
+
+                    barstring += "  " + descriptionstring;
+                    #endregion
+                    return avgstring + barstring;
+                }
+            }
+            catch (Exception)
             {
-                avgstring += " ";
+                return "Oops... An Error occured. Statistics Plot cannot be displayed";
             }
-            avgstring += "  " + descriptionstringAvg;
-            avgstring += "\n";
-
-            #endregion
-
-            #region Bar_Line
-            string barstring = "";
-            barstring += beginstring;
-
-            for (int i = 0; i < blurredLength; i++)
-            {
-                barstring += blurred;
-            }
-
-            if (scaledCurrent > scaledAvg)
-            {
-                barstring = barstring.Insert(scaledMin, marker.ToString());
-                barstring = barstring.Insert(scaledAvg + 1, avgmarker.ToString());
-                barstring = barstring.Insert(scaledCurrent + 2, marker.ToString());
-                barstring += marker;
-            }
-            else if (scaledCurrent < scaledAvg)
-            {
-                barstring = barstring.Insert(scaledMin, marker.ToString());
-                barstring = barstring.Insert(scaledCurrent + 1, marker.ToString());
-                barstring = barstring.Insert(scaledAvg + 2, avgmarker.ToString());
-                barstring += marker;
-            }
-            else
-            {
-                barstring = barstring.Insert(scaledMin, marker.ToString());
-                barstring = barstring.Insert(scaledCurrent + 1, marker.ToString());
-                barstring += marker;
-            }
-
-
-            barstring += "  Max: " + MaximumDownloadTime + "ms";
-
-            barstring += "\n";
-            #endregion
-
-            #region Current_Description_Line
-            string descriptionstring = "Current: " + CurrentDownloadTime + "ms" + "\n\n";
-
-            int spacesBeforeCurrentTimeDescription = scaledCurrent - (int)Math.Round((double)descriptionstring.Length / 2);
-
-            if (spacesBeforeCurrentTimeDescription < 0)
-            {
-                spacesBeforeCurrentTimeDescription = 0;
-            }
-
-            for (int i = 0; i < spacesBeforeCurrentTimeDescription; i++)
-            {
-                barstring += " ";
-            }
-
-            barstring += "  " + descriptionstring;
-            #endregion
-
-
-            return avgstring + barstring;
+            
+            
         }
 
         #endregion
