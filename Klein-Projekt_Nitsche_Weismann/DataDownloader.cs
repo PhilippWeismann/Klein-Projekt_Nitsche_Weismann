@@ -37,7 +37,6 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             catch (Exception)
             {
-
                 currentDownloadTime = -1;
             }
             return currentDownloadTime;

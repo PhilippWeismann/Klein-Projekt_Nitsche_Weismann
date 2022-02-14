@@ -84,8 +84,17 @@ namespace Klein_Projekt_Nitsche_Weismann
         {
             Console.Clear();
 
-            Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
-            PrintBarStringToConsole(80);
+            long downloadTime = DataDownloader.DownloadTimeOfFile();
+
+            if (downloadTime > 0)
+            {
+                Console.WriteLine("Downloadtime: " + downloadTime + "ms");
+                PrintBarStringToConsole(80);
+            }
+            else
+            {
+                Console.WriteLine("The Speedtest didn't work. Please try again.");
+            }
 
             Console.ReadKey();
         }
