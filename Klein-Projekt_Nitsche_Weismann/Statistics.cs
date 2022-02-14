@@ -39,7 +39,8 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value > 0)
+                //if (value > 0)
+                if (value >= 0)
                 {
                     _minDownloadTime = value;
                 }
@@ -58,7 +59,8 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value >= _minDownloadTime)
+                //if (value >= _minDownloadTime)
+                if (value >= 0)
                 {
                     _maxDownloadTime = value;
                 }
@@ -77,7 +79,8 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value >= _minDownloadTime && value <= _maxDownloadTime)
+                //if (value >= _minDownloadTime && value <= _maxDownloadTime)
+                if (value >= 0)
                 {
                     _currentDownloadTime = value;
                 }
@@ -96,7 +99,8 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             set
             {
-                if (value >= _minDownloadTime && value <= _maxDownloadTime)
+                //if (value >= _minDownloadTime && value <= _maxDownloadTime)
+                if (value >= 0)
                 {
                     _averageDownloadTime = value;
                 }
@@ -157,6 +161,16 @@ namespace Klein_Projekt_Nitsche_Weismann
             CountSpeedtest += 1;
             StatisticToCsv();
         }
+        public static void ResetStatitic()
+        {
+            MinimumDownloadTime = 0;
+            MaximumDownloadTime = 0;
+            AverageDownloadTime = 0;
+            CountSpeedtest = 0;
+
+            StatisticToCsv();
+        }
+
         public static void ReadStatisticCsv(char seperator)
         {
 
@@ -205,7 +219,6 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             myStreamReader.Close();
         }
-
 
         public static void StatisticToCsv()
         {
