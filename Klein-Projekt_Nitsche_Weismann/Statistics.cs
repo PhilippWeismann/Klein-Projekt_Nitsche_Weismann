@@ -364,7 +364,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             }
             catch (Exception)
             {
-                return "Oops... An Error occured. Statistics Plot cannot be displayed";
+                return "Oops... An Error occured. Statistics Plot cannot be displayed\n\n";
             }
             
             
