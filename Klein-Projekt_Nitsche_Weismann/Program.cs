@@ -11,53 +11,7 @@ namespace Klein_Projekt_Nitsche_Weismann
     {
         static void Main(string[] args)
         {
-            // Program Flow:
-            // measure Data
-            // Add Data to Statistics
-            // generate progress bar out of statistics
-
-            #region testarea
-            ////Test AddNewData
-            //Statistics.AddNewData(10);
-            //Statistics.AddNewData(20);
-            //Statistics.AddNewData(15);
-
-            ////Test IsGreaterThanAverage
-            //if (Statistics.IsValueGreaterThanAverage(16))
-            //{
-            //    Console.WriteLine("Yes");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("No");
-            //}
-            //if (Statistics.IsValueGreaterThanAverage(7))
-            //{
-            //    Console.WriteLine("Yes");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("No");
-            //}
-
-            ////Test ToString()
-            //Console.WriteLine(Statistics.AsString());
-            //Console.ReadLine();
-
-
-            //Console.WriteLine("Download dauert ba mia ca 5200ms... bitte warten...");
-
-
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    Console.WriteLine("Downloadtime: " + DataDownloader.DownloadTimeOfFile() + "ms");
-            //    PrintBarStringToConsole(80);
-            //}
-            //Console.ReadKey();
-
-            #endregion
-
-            Mainmenu();
+             Mainmenu();
         }
 
         public static void Mainmenu()
@@ -75,7 +29,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             do
             {
                 Console.Clear();
-                Console.WriteLine("Navigate with Arrow Up - Arrow Down - Keys\n");
+                Console.WriteLine("Internet / Network Speedtest\n\nNavigate with Arrow Up - Arrow Down - Keys\n");
                 Mainmenu.MenuLoopInConsole();
             } while (!exit);
         }
@@ -84,17 +38,23 @@ namespace Klein_Projekt_Nitsche_Weismann
         {
             Console.Clear();
 
+            Console.WriteLine("Please wait... Speedtest is running...");
+
             long downloadTime = DataDownloader.DownloadTimeOfFile();
 
             if (downloadTime > 0)
             {
-                Console.WriteLine("Downloadtime: " + downloadTime + "ms");
+                Console.Clear();
+                Console.WriteLine("Your current Network-Speed is: " + String.Format("{0:0.00}", Statistics.ConvertDownloadTimeToMbitperSecond(downloadTime)) + " Mbit/s ... [Downloadtime: " + downloadTime + " ms]\n");
                 PrintBarStringToConsole(80);
+                Console.WriteLine("\n\nPress any Key to return to Main Menu...");
             }
             else
             {
-                Console.WriteLine("The Speedtest didn't work. Please try again.");
+                Console.WriteLine("An Error occured during the Speed Test. Please try again.");
             }
+
+
 
             Console.ReadKey();
         }
@@ -102,7 +62,7 @@ namespace Klein_Projekt_Nitsche_Weismann
         {
             Console.Clear();
 
-            Console.WriteLine(Statistics.AsString() + "\n\n\nPress a Key to continue ...");
+            Console.WriteLine(Statistics.AsString() + "\n\n\nPress any Key to return to Main Menu...");
 
             Console.ReadLine();
         }

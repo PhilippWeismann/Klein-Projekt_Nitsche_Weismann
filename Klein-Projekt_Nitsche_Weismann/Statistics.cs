@@ -260,14 +260,14 @@ namespace Klein_Projekt_Nitsche_Weismann
 
             outputString = "Statistic Speedtest:\n\n";
 
-            outputString += "The Average of the last " + CountSpeedtest + " Speedtests is: " + AverageDownloadTime + " MBit/s";
-            outputString += "\nThe fastest Speedtest was: " + MaximumDownloadTime + " MBit/s";
-            outputString += "\nThe slowest Speedtest was: " + MinimumDownloadTime + " MBit/s";
+            outputString += "The Average of the last " + CountSpeedtest + " Speedtests is: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(AverageDownloadTime)) + " MBit/s";
+            outputString += "\nThe fastest Speedtest was: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond((double)MinimumDownloadTime)) + " MBit/s";
+            outputString += "\nThe slowest Speedtest was: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond((double)MaximumDownloadTime)) + " MBit/s";
 
             return outputString;
         }
 
-        private static double ConvertDownloadTimeToMbitperSecond(double downloadTimeIn_ms)
+        public static double ConvertDownloadTimeToMbitperSecond(double downloadTimeIn_ms)
         {
             double DownloadSpeed = 0; //Mbit/s
             int filesizeInMBit = _filesize * 8 / 1000000;
@@ -284,7 +284,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             {
                 if (CountSpeedtest < 3)
                 {
-                    return "Statistic Bar is only available after 2 Download Speed Measurements were taken.\nThere were currently " + CountSpeedtest + " Download Speed Measurements taken.";
+                    return "Statistic Bar is only available after 3 Download Speed Measurements were taken.\nThere were currently " + CountSpeedtest + " Download Speed Measurements taken.";
                 }
                 else
                 {
@@ -297,7 +297,8 @@ namespace Klein_Projekt_Nitsche_Weismann
                     string beginstring = "Max: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(MinimumDownloadTime)) + "MBit/s  ";
 
                     int span = MaximumDownloadTime - MinimumDownloadTime;
-                    double scalingfactor = (double)length / (double)span;
+                    double scalingfactor = (double)blurredLength / (double)span;
+
                     int scaledMin = beginstring.Length;
                     int scaledAvg = scaledMin + Convert.ToInt32((AverageDownloadTime - MinimumDownloadTime) * scalingfactor);
                     int scaledCurrent = scaledMin + Convert.ToInt32((CurrentDownloadTime - MinimumDownloadTime) * scalingfactor);
@@ -326,26 +327,64 @@ namespace Klein_Projekt_Nitsche_Weismann
                     string barstring = "";
                     barstring += beginstring;
 
-                    for (int i = 0; i <= blurredLength; i++)
-                    {
-                        barstring += blurred;
-                    }
 
-                    int len = barstring.Length;
-
-                    if (scaledCurrent > scaledAvg)
+                    if (CurrentDownloadTime > AverageDownloadTime)
                     {
-                        barstring = barstring.Insert(scaledMin, marker.ToString());
-                        barstring = barstring.Insert(scaledAvg + 1, avgmarker.ToString());
-                        barstring = barstring.Insert(scaledCurrent + 2, marker.ToString());
-                        barstring += marker;
+                        int blurredBetweenMinAndAvg = Convert.ToInt32(scalingfactor * (AverageDownloadTime - MinimumDownloadTime));
+                        int blurredBetweenAvgAndCurr = Convert.ToInt32(scalingfactor * (CurrentDownloadTime - AverageDownloadTime));
+                        int blurredBetweenCurrAndMax = blurredLength - (blurredBetweenMinAndAvg + blurredBetweenAvgAndCurr);
+
+                        barstring += marker; //mintime = maxdownload
+
+                        for (int i = 0; i <= blurredBetweenMinAndAvg; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += avgmarker; //avg
+
+                        for (int i = 0; i <= blurredBetweenAvgAndCurr; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; // current
+
+                        for (int i = 0; i <= blurredBetweenCurrAndMax; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; //maxtime = mindownload
                     }
                     else
                     {
-                        barstring = barstring.Insert(scaledMin, marker.ToString());
-                        barstring = barstring.Insert(scaledCurrent + 1, marker.ToString());
-                        barstring = barstring.Insert(scaledAvg + 2, avgmarker.ToString());
-                        barstring += marker;
+                        int blurredBetweenMinAndCurr = Convert.ToInt32(scalingfactor * (CurrentDownloadTime - MinimumDownloadTime));
+                        int blurredBetweenCurrAndAvg = Convert.ToInt32(scalingfactor * (AverageDownloadTime - CurrentDownloadTime));
+                        int blurredBetweenAvgAndMax = blurredLength - (blurredBetweenMinAndCurr + blurredBetweenCurrAndAvg);
+
+                        barstring += marker; //mintime = maxdownload
+
+                        for (int i = 0; i <= blurredBetweenMinAndCurr; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += avgmarker; //avg
+
+                        for (int i = 0; i <= blurredBetweenCurrAndAvg; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; // current
+
+                        for (int i = 0; i <= blurredBetweenAvgAndMax; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; //maxtime = mindownload
                     }
 
 
