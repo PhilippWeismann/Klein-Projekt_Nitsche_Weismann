@@ -11,7 +11,8 @@ namespace Klein_Projekt_Nitsche_Weismann
     {
         static void Main(string[] args)
         {
-             Mainmenu();
+            Settings();
+            Mainmenu();
         }
 
         public static void Mainmenu()
@@ -116,5 +117,17 @@ namespace Klein_Projekt_Nitsche_Weismann
 
 
         }
+        public static void Settings()
+        {
+            //Setting to Print €-Sign
+            Console.OutputEncoding = Encoding.Default;
+            Console.OutputEncoding = Encoding.UTF8;
+
+            //Console Settings
+            Console.Title = "Network/Internet - SpeedTest | © Simon Nitsche & Philipp Weismann";
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.SetWindowSize(140, 20);
+        }// Settings for Console-Appearance
     }
 }

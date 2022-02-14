@@ -10,8 +10,7 @@ namespace Klein_Projekt_Nitsche_Weismann
 {
     static class DataDownloader
     {
-        static string downloadLink = "https://drive.google.com/uc?export=download&id=1zXtaDJNJX-e5zjqkei6lQDeh5YWqHEhi"; //txt-Datei mit 1Mio bytes
-
+        static string downloadLink = "https://dl.dropboxusercontent.com/s/xqii6dc6s3ko6k2/DownloadTxt_10hoch6_Bytes_2.txt?dl=0"; //txt-Datei mit 1Mio bytes
 
         static string tempSavingPath = @"..\..\temp.txt";
 

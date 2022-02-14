@@ -299,13 +299,85 @@ namespace Klein_Projekt_Nitsche_Weismann
                     int span = MaximumDownloadTime - MinimumDownloadTime;
                     double scalingfactor = (double)blurredLength / (double)span;
 
-                    int scaledMin = beginstring.Length;
-                    int scaledAvg = scaledMin + Convert.ToInt32((AverageDownloadTime - MinimumDownloadTime) * scalingfactor);
-                    int scaledCurrent = scaledMin + Convert.ToInt32((CurrentDownloadTime - MinimumDownloadTime) * scalingfactor);
+
+                    #region Bar_Line
+                    string barstring = "";
+                    barstring += beginstring;
+
+
+                    if (CurrentDownloadTime > AverageDownloadTime)
+                    {
+                        int blurredBetweenMinAndAvg = Convert.ToInt32(scalingfactor * (AverageDownloadTime - MinimumDownloadTime));
+                        int blurredBetweenAvgAndCurr = Convert.ToInt32(scalingfactor * (CurrentDownloadTime - AverageDownloadTime));
+                        int blurredBetweenCurrAndMax = blurredLength - (blurredBetweenMinAndAvg + blurredBetweenAvgAndCurr);
+
+                        barstring += marker; //mintime = maxdownload
+
+                        for (int i = 0; i < blurredBetweenMinAndAvg; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += avgmarker; //avg
+
+                        for (int i = 0; i < blurredBetweenAvgAndCurr; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; // current
+
+                        for (int i = 0; i < blurredBetweenCurrAndMax; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; //maxtime = mindownload
+                    }
+                    else
+                    {
+                        int blurredBetweenMinAndCurr = Convert.ToInt32(scalingfactor * (CurrentDownloadTime - MinimumDownloadTime));
+                        int blurredBetweenCurrAndAvg = Convert.ToInt32(scalingfactor * (AverageDownloadTime - CurrentDownloadTime));
+                        int blurredBetweenAvgAndMax = blurredLength - (blurredBetweenMinAndCurr + blurredBetweenCurrAndAvg);
+
+                        barstring += marker; //mintime = maxdownload
+
+                        for (int i = 0; i < blurredBetweenMinAndCurr; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; // current
+
+                        for (int i = 0; i < blurredBetweenCurrAndAvg; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += avgmarker; //avg
+
+                        for (int i = 0; i < blurredBetweenAvgAndMax; i++)
+                        {
+                            barstring += blurred;
+                        }
+
+                        barstring += marker; //maxtime = mindownload
+                    }
+
+
+
+                    barstring += "  Min: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(MaximumDownloadTime)) + "MBit/s  ";
+
+                    barstring += "\n";
+                    #endregion
+
+
 
                     #region AVG_Line
 
                     string descriptionstringAvg = "Avg: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(AverageDownloadTime)) + "MBit/s  ";
+
+                    int scaledAvg = beginstring.Length + Convert.ToInt32((AverageDownloadTime - MinimumDownloadTime) * scalingfactor);
 
                     int spacesBeforeAvgDescription = scaledAvg - (int)Math.Round((double)descriptionstringAvg.Length / 2);
 
@@ -323,79 +395,10 @@ namespace Klein_Projekt_Nitsche_Weismann
 
                     #endregion
 
-                    #region Bar_Line
-                    string barstring = "";
-                    barstring += beginstring;
-
-
-                    if (CurrentDownloadTime > AverageDownloadTime)
-                    {
-                        int blurredBetweenMinAndAvg = Convert.ToInt32(scalingfactor * (AverageDownloadTime - MinimumDownloadTime));
-                        int blurredBetweenAvgAndCurr = Convert.ToInt32(scalingfactor * (CurrentDownloadTime - AverageDownloadTime));
-                        int blurredBetweenCurrAndMax = blurredLength - (blurredBetweenMinAndAvg + blurredBetweenAvgAndCurr);
-
-                        barstring += marker; //mintime = maxdownload
-
-                        for (int i = 0; i <= blurredBetweenMinAndAvg; i++)
-                        {
-                            barstring += blurred;
-                        }
-
-                        barstring += avgmarker; //avg
-
-                        for (int i = 0; i <= blurredBetweenAvgAndCurr; i++)
-                        {
-                            barstring += blurred;
-                        }
-
-                        barstring += marker; // current
-
-                        for (int i = 0; i <= blurredBetweenCurrAndMax; i++)
-                        {
-                            barstring += blurred;
-                        }
-
-                        barstring += marker; //maxtime = mindownload
-                    }
-                    else
-                    {
-                        int blurredBetweenMinAndCurr = Convert.ToInt32(scalingfactor * (CurrentDownloadTime - MinimumDownloadTime));
-                        int blurredBetweenCurrAndAvg = Convert.ToInt32(scalingfactor * (AverageDownloadTime - CurrentDownloadTime));
-                        int blurredBetweenAvgAndMax = blurredLength - (blurredBetweenMinAndCurr + blurredBetweenCurrAndAvg);
-
-                        barstring += marker; //mintime = maxdownload
-
-                        for (int i = 0; i <= blurredBetweenMinAndCurr; i++)
-                        {
-                            barstring += blurred;
-                        }
-
-                        barstring += avgmarker; //avg
-
-                        for (int i = 0; i <= blurredBetweenCurrAndAvg; i++)
-                        {
-                            barstring += blurred;
-                        }
-
-                        barstring += marker; // current
-
-                        for (int i = 0; i <= blurredBetweenAvgAndMax; i++)
-                        {
-                            barstring += blurred;
-                        }
-
-                        barstring += marker; //maxtime = mindownload
-                    }
-
-
-
-                    barstring += "  Min: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(MaximumDownloadTime)) + "MBit/s  ";
-
-                    barstring += "\n";
-                    #endregion
-
                     #region Current_Description_Line
                     string descriptionstring = "Current: " + String.Format("{0:0.00}", ConvertDownloadTimeToMbitperSecond(CurrentDownloadTime)) + "MBit/s  " + "\n\n";
+
+                    int scaledCurrent = beginstring.Length + Convert.ToInt32((CurrentDownloadTime - MinimumDownloadTime) * scalingfactor);
 
                     int spacesBeforeCurrentTimeDescription = scaledCurrent - (int)Math.Round((double)descriptionstring.Length / 2);
 
