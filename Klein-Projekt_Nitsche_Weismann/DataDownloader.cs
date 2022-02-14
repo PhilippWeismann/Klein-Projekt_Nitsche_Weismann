@@ -23,16 +23,23 @@ namespace Klein_Projekt_Nitsche_Weismann
         {
             int currentDownloadTime = 0;
 
-            stopwatch.Start();
-            myWebclient.DownloadFile(downloadLink, tempSavingPath);
-            stopwatch.Stop();
+            try
+            {
+                stopwatch.Start();
+                myWebclient.DownloadFile(downloadLink, tempSavingPath);
+                stopwatch.Stop();
 
-            currentDownloadTime = Convert.ToInt32(stopwatch.ElapsedMilliseconds);
+                currentDownloadTime = Convert.ToInt32(stopwatch.ElapsedMilliseconds);
 
-            stopwatch.Reset();
+                stopwatch.Reset();
 
-            Statistics.AddNewData(currentDownloadTime);
+                Statistics.AddNewData(currentDownloadTime);
+            }
+            catch (Exception)
+            {
 
+                currentDownloadTime = -1;
+            }
             return currentDownloadTime;
         
         }
