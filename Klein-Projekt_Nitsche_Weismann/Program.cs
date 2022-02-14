@@ -46,7 +46,7 @@ namespace Klein_Projekt_Nitsche_Weismann
             if (downloadTime > 0)
             {
                 Console.Clear();
-                Console.WriteLine("Your current Network-Speed is: " + String.Format("{0:0.00}", Statistics.ConvertDownloadTimeToMbitperSecond(downloadTime)) + " Mbit/s ... [Downloadtime: " + downloadTime + " ms]\n");
+                Console.WriteLine("Your current Network-Speed is: " + String.Format("{0:0.00}", Statistics.ConvertDownloadTimeToMbitperSecond(downloadTime)) + " Mbit/s ... [Downloadtime: " + downloadTime + " ms - Filesize: 1000000 Byte]\n");
                 PrintBarStringToConsole(80);
                 Console.WriteLine("\n\nPress any Key to return to Main Menu...");
             }
